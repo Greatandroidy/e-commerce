@@ -244,6 +244,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
       color: (selectedColor as any) || product.color,
     })
 
+    
     if (success) {
       window.location.href = "/checkout"
     } else {

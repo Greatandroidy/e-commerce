@@ -18,6 +18,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import ProductTabs from "@/components/product/product-tabs"
 
 export default function ProductPage() {
   const params = useParams()
@@ -71,6 +72,7 @@ export default function ProductPage() {
             <ProductInfo product={product} />
           </div>
 
+           <ProductTabs product={product} />
           {/* Complete the Look section */}
           <CompleteLook />
 
