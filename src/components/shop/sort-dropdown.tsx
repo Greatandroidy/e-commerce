@@ -29,7 +29,7 @@ export function SortDropdown({ options, defaultValue, onSortChange, resultsCount
   const selectedLabel = options.find((option) => option.value === selectedSort)?.label || options[0].label
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex items-center justify-end w-full">
       {resultsCount !== undefined && <span className="text-sm text-muted-foreground">{resultsCount} results</span>}
 
       <DropdownMenu>

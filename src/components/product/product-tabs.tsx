@@ -171,7 +171,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
         })
     }
 
-    // Scroll to section when tab changes
+ /*    // Scroll to section when tab changes
     useEffect(() => {
         if (activeTab === "reviews" && reviewsRef.current) {
             reviewsRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
@@ -180,10 +180,20 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
         } else if (activeTab === "shipping" && shippingRef.current) {
             shippingRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
         }
-    }, [activeTab])
+    }, [activeTab]) */
 
     return (
-        <div className="mt-8">
+        <div className="mt-9">
+              {/* Section Titles */}
+              <div className="mb-6">
+                <h3 className="text-lg font-medium flex items-center">
+                    <span className="border-l-4 border-primary pl-3">
+                        {activeTab === "description" ? "Product Description" : 
+                         activeTab === "reviews" ? "Customer Reviews" : 
+                         "Shipping & Returns"}
+                    </span>
+                </h3>
+            </div>
             <div className="flex border-b">
                 <button
                     className={cn(
@@ -222,10 +232,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 
             <div className="py-4">
                 {/* Description Tab */}
-                <div ref={descriptionRef} className={activeTab === "description" ? "block" : "hidden"}>
-                    <h3 className="text-lg font-medium flex items-center mb-4">
-                        <span className="border-l-4 border-primary pl-3">Product Description</span>
-                    </h3>
+                <div className={activeTab === "description" ? "block" : "hidden"}>
                     <div className="space-y-4">
                         <p className="text-muted-foreground">{product.description}</p>
                         <div className="mt-4 grid grid-cols-2 gap-4">
@@ -250,11 +257,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
                 </div>
 
                 {/* Reviews Tab */}
-                <div ref={reviewsRef} className={activeTab === "reviews" ? "block" : "hidden"}>
-                    <h3 className="text-lg font-medium flex items-center mb-4">
-                        <span className="border-l-4 border-primary pl-3">Customer Reviews</span>
-                    </h3>
-
+                <div className={activeTab === "reviews" ? "block" : "hidden"}>
                     {/* Reviews summary */}
                     <div className="bg-muted/30 p-4 rounded-lg">
                         <div className="flex flex-col md:flex-row gap-6">
@@ -504,11 +507,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
                 </div>
 
                 {/* Shipping Tab */}
-                <div ref={shippingRef} className={activeTab === "shipping" ? "block" : "hidden"}>
-                    <h3 className="text-lg font-medium flex items-center mb-4">
-                        <span className="border-l-4 border-primary pl-3">Shipping & Returns</span>
-                    </h3>
-
+                <div className={activeTab === "shipping" ? "block" : "hidden"}>
                     <div className="space-y-6">
                         <div>
                             <h4 className="font-medium mb-2">Shipping Information</h4>

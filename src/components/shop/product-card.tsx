@@ -82,7 +82,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
       })
     }
 
-    if (product.isLimited) {
+    if (product?.isLimited) {
       infoItems.push({
         type: "limited",
         ...PRODUCT_INFO_CONFIG.limited,

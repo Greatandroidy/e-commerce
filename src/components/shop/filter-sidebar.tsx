@@ -11,11 +11,18 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 interface FilterSidebarProps {
   className?: string
+}
+
+interface FilterState {
+  category: string[]
+  color: string[]
+  size: string[]
+  style: string[]
+  priceRange: [number, number]
 }
 
 export function FilterSidebar({ className }: FilterSidebarProps) {
@@ -43,30 +50,38 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
   }, [isSheetOpen])
 
   const toggleCategory = (categoryId: string) => {
-    setExpandedCategories((current) =>
-      current.includes(categoryId) ? current.filter((id) => id !== categoryId) : [...current, categoryId],
+    setExpandedCategories((current: string[]) =>
+      current.includes(categoryId) ? current.filter((id: string) => id !== categoryId) : [...current, categoryId],
     )
   }
 
   const toggleSection = (sectionId: string) => {
-    setExpandedSections((current) =>
-      current.includes(sectionId) ? current.filter((id) => id !== sectionId) : [...current, sectionId],
+    setExpandedSections((current: string[]) =>
+      current.includes(sectionId) ? current.filter((id: string) => id !== sectionId) : [...current, sectionId],
     )
   }
 
-  const toggleFilter = (type: keyof typeof filters, value: string) => {
+  const toggleFilter = (type: keyof FilterState, value: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setFilters({
       ...filters,
       [type]: filters[type].includes(value)
-        ? filters[type].filter((item) => item !== value)
-        : [...filters[type], value],
+        ? (filters[type] as string[]).filter((item: string) => item !== value)
+        : [...(filters[type] as string[]), value],
     })
   }
 
-  const updatePriceRange = (value: [number, number]) => {
+  const updatePriceRange = (value: number[], e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setFilters({
       ...filters,
-      priceRange: value,
+      priceRange: value as [number, number],
     })
   }
 
@@ -104,7 +119,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
               variant="ghost"
               size="icon"
               className="h-4 w-4 p-0 ml-1"
-              onClick={() => toggleFilter("category", cat)}
+              onClick={(e) => toggleFilter("category", cat, e)}
             >
               <X className="h-3 w-3" />
               <span className="sr-only">Remove</span>
@@ -118,7 +133,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
               variant="ghost"
               size="icon"
               className="h-4 w-4 p-0 ml-1"
-              onClick={() => toggleFilter("color", color)}
+              onClick={(e) => toggleFilter("color", color, e)}
             >
               <X className="h-3 w-3" />
               <span className="sr-only">Remove</span>
@@ -128,7 +143,12 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         {filters.size.map((size) => (
           <Badge key={`active-size-${size}`} variant="outline" className="px-2 py-1 gap-1 bg-muted/50">
             {size}
-            <Button variant="ghost" size="icon" className="h-4 w-4 p-0 ml-1" onClick={() => toggleFilter("size", size)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-4 w-4 p-0 ml-1"
+              onClick={(e) => toggleFilter("size", size, e)}
+            >
               <X className="h-3 w-3" />
               <span className="sr-only">Remove</span>
             </Button>
@@ -141,7 +161,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
               variant="ghost"
               size="icon"
               className="h-4 w-4 p-0 ml-1"
-              onClick={() => toggleFilter("style", style)}
+              onClick={(e) => toggleFilter("style", style, e)}
             >
               <X className="h-3 w-3" />
               <span className="sr-only">Remove</span>
@@ -153,8 +173,8 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
   }
 
   const FilterContent = () => (
-    <div className={cn("w-full space-y-4", className)}>
-      <div className="flex items-center justify-between">
+    <div className={cn("w-full border shadow-sm", className)}>
+      <div className="flex items-center py-2 px-3 justify-between">
         <h3 className="text-lg font-medium">Filter</h3>
         {isFilterApplied && (
           <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 px-2 text-xs">
@@ -172,7 +192,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 variant="ghost"
                 size="icon"
                 className="ml-1 h-4 w-4 p-0"
-                onClick={() => toggleFilter("category", cat)}
+                onClick={(e) => toggleFilter("category", cat, e)}
               >
                 <X className="h-3 w-3" />
                 <span className="sr-only">Remove</span>
@@ -186,7 +206,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 variant="ghost"
                 size="icon"
                 className="ml-1 h-4 w-4 p-0"
-                onClick={() => toggleFilter("color", color)}
+                onClick={(e) => toggleFilter("color", color, e)}
               >
                 <X className="h-3 w-3" />
                 <span className="sr-only">Remove</span>
@@ -200,7 +220,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 variant="ghost"
                 size="icon"
                 className="ml-1 h-4 w-4 p-0"
-                onClick={() => toggleFilter("size", size)}
+                onClick={(e) => toggleFilter("size", size, e)}
               >
                 <X className="h-3 w-3" />
                 <span className="sr-only">Remove</span>
@@ -214,7 +234,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 variant="ghost"
                 size="icon"
                 className="ml-1 h-4 w-4 p-0"
-                onClick={() => toggleFilter("style", style)}
+                onClick={(e) => toggleFilter("style", style, e)}
               >
                 <X className="h-3 w-3" />
                 <span className="sr-only">Remove</span>
@@ -229,19 +249,23 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         </div>
       )}
 
-      <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 pb-4 scrollbar-thin">
+      <div className="max-h-[calc(100vh-200px)] overflow-y-auto pb-4 scrollbar-thin">
         {/* Categories */}
-        <Card className="border shadow-sm">
-          <CardHeader className="p-3 cursor-pointer" onClick={() => toggleSection("categories")}>
+        <div className="border shadow-sm">
+          <div className="p-3 cursor-pointer" onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSection("categories");
+          }}>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">Categories</CardTitle>
+              <h1 className="text-sm font-medium">Categories</h1>
               {expandedSections.includes("categories") ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
               )}
             </div>
-          </CardHeader>
+          </div>
           <AnimatePresence>
             {expandedSections.includes("categories") && (
               <motion.div
@@ -250,19 +274,29 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <CardContent className="p-3 pt-0">
+                <div className="p-3 pt-0">
                   <div className="space-y-2">
                     {categories.map((category) => (
                       <div key={category.id}>
                         <div
                           className="flex items-center justify-between cursor-pointer py-1"
-                          onClick={() => toggleCategory(category.id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleCategory(category.id);
+                          }}
                         >
                           <div className="flex items-center gap-2">
                             <Checkbox
                               id={`category-${category.id}`}
                               checked={filters.category.includes(category.id)}
-                              onCheckedChange={() => toggleFilter("category", category.id)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  toggleFilter("category", category.id);
+                                } else {
+                                  toggleFilter("category", category.id);
+                                }
+                              }}
                               onClick={(e) => e.stopPropagation()}
                             />
                             <label
@@ -293,7 +327,13 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                                   <Checkbox
                                     id={`${category.id}-${subCategory}`}
                                     checked={filters.category.includes(`${category.id}-${subCategory}`)}
-                                    onCheckedChange={() => toggleFilter("category", `${category.id}-${subCategory}`)}
+                                    onCheckedChange={(checked) => {
+                                      if (checked) {
+                                        toggleFilter("category", `${category.id}-${subCategory}`);
+                                      } else {
+                                        toggleFilter("category", `${category.id}-${subCategory}`);
+                                      }
+                                    }}
                                   />
                                   <label
                                     htmlFor={`${category.id}-${subCategory}`}
@@ -309,24 +349,28 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                       </div>
                     ))}
                   </div>
-                </CardContent>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </Card>
+        </div>
 
         {/* Price */}
-        <Card className="border shadow-sm">
-          <CardHeader className="p-3 cursor-pointer" onClick={() => toggleSection("price")}>
+        <div className="border shadow-sm">
+          <div className="p-3 cursor-pointer" onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSection("price");
+          }}>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">Price</CardTitle>
+              <h1 className="text-sm font-medium">Price</h1>
               {expandedSections.includes("price") ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
               )}
             </div>
-          </CardHeader>
+          </div>
           <AnimatePresence>
             {expandedSections.includes("price") && (
               <motion.div
@@ -335,14 +379,14 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <CardContent className="p-3 pt-0">
+                <div className="p-3">
                   <div className="space-y-4">
                     <Slider
                       defaultValue={[0, 100]}
                       max={100}
                       step={1}
                       value={filters.priceRange}
-                      onValueChange={updatePriceRange}
+                      onValueChange={(value) => updatePriceRange(value)}
                       className="py-4"
                     />
                     <div className="flex items-center justify-between">
@@ -350,24 +394,28 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                       <span className="text-sm">${filters.priceRange[1] * 8}</span>
                     </div>
                   </div>
-                </CardContent>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </Card>
+        </div>
 
         {/* Colors */}
-        <Card className="border shadow-sm">
-          <CardHeader className="p-3 cursor-pointer" onClick={() => toggleSection("colors")}>
+        <div className="border shadow-sm">
+          <div className="p-3 cursor-pointer" onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSection("colors");
+          }}>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">Colors</CardTitle>
+              <h1 className="text-sm font-medium">Colors</h1>
               {expandedSections.includes("colors") ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
               )}
             </div>
-          </CardHeader>
+          </div>
           <AnimatePresence>
             {expandedSections.includes("colors") && (
               <motion.div
@@ -376,7 +424,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <CardContent className="p-3 pt-0">
+                <div className="p-3 pt-0">
                   <div className="grid grid-cols-4 gap-2 py-2">
                     {colors.map((color) => (
                       <div key={color.id} className="flex flex-col items-center gap-1">
@@ -387,30 +435,34 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                           )}
                           style={{ backgroundColor: color.value }}
                           aria-label={`Filter by ${color.label}`}
-                          onClick={() => toggleFilter("color", color.id)}
+                          onClick={(e) => toggleFilter("color", color.id, e)}
                         />
                         <span className="text-xs text-muted-foreground">{color.label}</span>
                       </div>
                     ))}
                   </div>
-                </CardContent>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </Card>
+        </div>
 
         {/* Sizes */}
-        <Card className="border shadow-sm">
-          <CardHeader className="p-3 cursor-pointer" onClick={() => toggleSection("sizes")}>
+        <div className="border shadow-sm">
+          <div className="p-3 cursor-pointer" onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSection("sizes");
+          }}>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">Size</CardTitle>
+              <h1 className="text-sm font-medium">Size</h1>
               {expandedSections.includes("sizes") ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
               )}
             </div>
-          </CardHeader>
+          </div>
           <AnimatePresence>
             {expandedSections.includes("sizes") && (
               <motion.div
@@ -419,7 +471,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <CardContent className="p-3 pt-0">
+                <div className="p-3 pt-0">
                   <div className="grid grid-cols-4 gap-2">
                     {sizes.map((size) => (
                       <div key={size.id} className="flex items-center justify-center">
@@ -429,31 +481,35 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                             filters.size.includes(size.id) &&
                               "bg-purple-600 text-white hover:bg-purple-700 border-purple-600",
                           )}
-                          onClick={() => toggleFilter("size", size.id)}
+                          onClick={(e) => toggleFilter("size", size.id, e)}
                         >
                           {size.label}
                         </button>
                       </div>
                     ))}
                   </div>
-                </CardContent>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </Card>
+        </div>
 
         {/* Styles */}
-        <Card className="border shadow-sm">
-          <CardHeader className="p-3 cursor-pointer" onClick={() => toggleSection("styles")}>
+        <div className="border shadow-sm">
+          <div className="p-3 cursor-pointer" onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSection("styles");
+          }}>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium">Dress Style</CardTitle>
+              <h1 className="text-sm font-medium">Dress Style</h1>
               {expandedSections.includes("styles") ? (
                 <ChevronUp className="h-4 w-4 text-muted-foreground" />
               ) : (
                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
               )}
             </div>
-          </CardHeader>
+          </div>
           <AnimatePresence>
             {expandedSections.includes("styles") && (
               <motion.div
@@ -462,14 +518,20 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <CardContent className="p-3 pt-0">
+                <div className="p-3 pt-0">
                   <div className="space-y-2">
                     {styles.map((style) => (
                       <div key={style} className="flex items-center gap-2">
                         <Checkbox
                           id={`style-${style}`}
                           checked={filters.style.includes(style)}
-                          onCheckedChange={() => toggleFilter("style", style)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              toggleFilter("style", style);
+                            } else {
+                              toggleFilter("style", style);
+                            }
+                          }}
                         />
                         <label htmlFor={`style-${style}`} className="text-sm text-muted-foreground cursor-pointer">
                           {style}
@@ -477,11 +539,11 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                       </div>
                     ))}
                   </div>
-                </CardContent>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </Card>
+        </div>
       </div>
 
       <div className="sticky bottom-0 bg-background pt-4 border-t mt-auto">
@@ -540,7 +602,13 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                       <Checkbox
                         id={`mobile-category-${category.id}`}
                         checked={filters.category.includes(category.id)}
-                        onCheckedChange={() => toggleFilter("category", category.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            toggleFilter("category", category.id);
+                          } else {
+                            toggleFilter("category", category.id);
+                          }
+                        }}
                       />
                       <label htmlFor={`mobile-category-${category.id}`} className="flex-1 cursor-pointer">
                         {category.label}
@@ -566,7 +634,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         variant={filters.size.includes(size.id) ? "default" : "outline"}
                         size="sm"
                         className="h-10"
-                        onClick={() => toggleFilter("size", size.id)}
+                        onClick={(e) => toggleFilter("size", size.id, e)}
                       >
                         {size.label}
                       </Button>
@@ -593,7 +661,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                           )}
                           style={{ backgroundColor: color.value }}
                           aria-label={`Filter by ${color.label}`}
-                          onClick={() => toggleFilter("color", color.id)}
+                          onClick={(e) => toggleFilter("color", color.id, e)}
                         />
                         <span className="text-xs text-muted-foreground">{color.label}</span>
                       </div>
@@ -616,7 +684,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                       max={100}
                       step={1}
                       value={filters.priceRange}
-                      onValueChange={updatePriceRange}
+                      onValueChange={(value) => updatePriceRange(value)}
                       className="py-4"
                     />
                     <div className="flex items-center justify-between">

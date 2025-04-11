@@ -10,7 +10,6 @@ import { Footer } from "@/components/layout/footer"
 import { FilterSidebar } from "@/components/shop/filter-sidebar"
 import { ProductGrid } from "@/components/shop/product-grid"
 import { useStore } from "@/lib/store"
-import { Card, CardContent } from "@/components/ui/card"
 import { Pagination } from "@/components/ui/pagination"
 // Import the new SortDropdown component
 import { SortDropdown } from "@/components/shop/sort-dropdown"
@@ -45,14 +44,14 @@ export default function ShopPage() {
   return (
     <>
       <Header />
-      <main className="container px-4 py-8 md:px-6 md:py-10">
+      <main className="container px-4 md:px-6">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="md:col-span-1">
             <FilterSidebar />
           </div>
-          <div className="md:col-span-3">
-            <Card className="mb-6 border shadow-sm">
-              <CardContent className="p-4">
+          <div className="py-8 md:py-10 md:col-span-3">
+            <div className="mb-6">
+              <div className="p-4">
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -60,7 +59,6 @@ export default function ShopPage() {
                 >
                   {/* Find the section where you display the sort options and replace it with: */}
                   <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-bold">Shop</h1>
                     <SortDropdown
                       options={[
                         { label: "Newest", value: "newest" },
@@ -75,8 +73,8 @@ export default function ShopPage() {
                     />
                   </div>
                 </motion.div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
             <ProductGrid products={sortedProducts} />
 
             {/* Pagination */}
