@@ -10,13 +10,15 @@ import { Search, X, ArrowRight, History, Loader2 } from "lucide-react"
 import { useStore } from "@/lib/store"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface SearchModalProps {
   isOpen: boolean
   onClose: () => void
+  className?: string
 }
 
-export function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export function SearchModal({ isOpen, onClose, className }: SearchModalProps) {
   const router = useRouter()
   const { products } = useStore()
   const [query, setQuery] = useState("")
@@ -124,10 +126,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed left-[50%] top-24 z-50 w-full max-w-2xl translate-x-[-50%] rounded-lg border bg-background shadow-lg"
+            className={cn(
+              "fixed left-1/2 top-24 z-50 w-[95vw] max-w-2xl -translate-x-1/2 rounded-lg border bg-background shadow-lg",
+              className
+            )}
           >
-            <div className="flex items-center border-b p-4">
-              <Search className="mr-2 h-5 w-5 text-muted-foreground" />
+            <div className="flex items-center gap-2 border-b p-4">
+              <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
               <Input
                 ref={inputRef}
                 type="search"
@@ -138,12 +143,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 onKeyDown={handleKeyDown}
               />
               {query && (
-                <Button variant="ghost" size="icon" className="mr-2" onClick={() => setQuery("")}>
+                <Button variant="ghost" size="icon" className="shrink-0" onClick={() => setQuery("")}>
                   <X className="h-4 w-4" />
                   <span className="sr-only">Clear</span>
                 </Button>
               )}
-              <Button className="bg-purple-600 hover:bg-purple-700" onClick={() => handleSearch()}>
+              <Button className="shrink-0 bg-purple-600 hover:bg-purple-700" onClick={() => handleSearch()}>
                 Search
               </Button>
             </div>

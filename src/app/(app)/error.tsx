@@ -62,7 +62,7 @@ export default function Error({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            <p className="text-sm font-mono text-muted-foreground">{error.message || "Unknown error"}</p>
+            <p className="text-sm font-mono text-destructive">Error: {error.message || "Unknown error"}</p>
             {error.stack && (
               <details className="mt-2">
                 <summary className="text-xs text-muted-foreground cursor-pointer">Stack trace</summary>
