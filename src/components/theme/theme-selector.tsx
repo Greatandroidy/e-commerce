@@ -103,7 +103,7 @@ export function ThemeSelector() {
   // Update the selected color when the theme changes
   useEffect(() => {
     if (theme) {
-      const colorName = theme.replace("-dark", "").replace("-light", "")
+      const colorName = theme.split('-')[0]
       if (themes.some((t) => t.name === colorName)) {
         setSelectedColor(colorName)
       }
@@ -112,24 +112,20 @@ export function ThemeSelector() {
 
   // Handle theme change
   const handleThemeChange = (newTheme: string) => {
-    // Preserve the current mode (light/dark)
-    const currentMode = resolvedTheme === "dark" ? "dark" : "light"
-
-    // If selecting a system theme
     if (newTheme === "system") {
       setTheme("system")
       return
     }
 
-    // If selecting a color theme
-    if (newTheme !== "light" && newTheme !== "dark") {
-      setSelectedColor(newTheme)
-      setTheme(`${newTheme}-${currentMode}`)
+    if (newTheme === "light" || newTheme === "dark") {
+      // If selecting a mode (light/dark), combine with current color
+      setTheme(`${selectedColor}-${newTheme}`)
       return
     }
 
-    // If selecting a mode (light/dark)
-    setTheme(selectedColor ? `${selectedColor}-${newTheme}` : newTheme)
+    // If selecting a color, combine with current mode
+    const currentMode = resolvedTheme === "dark" ? "dark" : "light"
+    setTheme(`${newTheme}-${currentMode}`)
   }
 
   // Ensure component is mounted to avoid hydration mismatch
